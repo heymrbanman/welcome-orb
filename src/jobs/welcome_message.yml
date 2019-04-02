@@ -1,6 +1,8 @@
 description: >
   Prints a welcome message and a short primer on getting started with CircleCI.
 
+executor: default
+
 steps:
   - run:
       name: "Welcome to CircleCI. Start by clicking here."
