@@ -1,0 +1,9 @@
+description: >
+  Provide some documentation links for getting started with CircleCI.
+
+executor: default
+
+steps:
+  - run:
+      name: "Click here for links to docs and next steps."
+      command: next_steps.sh
