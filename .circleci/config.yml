@@ -4,5 +4,6 @@ orbs:
 version: 2.1
 
 workflows:
-  Hello Workflow: jobs:
-    - hello-build/hello-build
+  "Hello Workflow": 
+    jobs:
+      - hello-build/hello-build
