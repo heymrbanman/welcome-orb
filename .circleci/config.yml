@@ -1,9 +1,12 @@
 orbs:
-  hello-build: circleci/hello-build@0.0.9
+  orb-tools: circleci/orb-tools@8.5.0
 
 version: 2.1
 
 workflows:
-  "Hello Workflow": 
+  lint-pack-validate: 
     jobs:
-      - hello-build/hello-build
+      - orb-tools/lint
+      - orb-tools/pack:
+          requires:
+            - orb-tools/lint
