@@ -1,9 +1,0 @@
-description: >
-  Describes some common environment variables used in CircleCI configs.
-
-executor: default
-
-steps:
-  - run:
-      name: "Click here to learn about some handy built-in environment variables."
-      command: common_env_vars.sh

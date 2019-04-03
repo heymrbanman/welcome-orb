@@ -1,0 +1,15 @@
+description: >
+  Describes a welcome message, common environment variables, and documentation links used to get started with CircleCI.
+
+executor: default
+
+steps:
+  - run:
+      name: "Welcome to CircleCI. Start by clicking here."
+      command: welcome_message.sh
+  - run:
+      name: "Click here to learn about some handy built-in environment variables."
+      command: common_env_vars.sh
+  - run:
+      name: "Click here for links to docs and next steps."
+      command: next_steps.sh
