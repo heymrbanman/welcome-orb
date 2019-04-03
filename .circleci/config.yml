@@ -1,6 +1,7 @@
 orbs:
   cli: circleci/circleci-cli@0.1.2
   orb-tools: circleci/orb-tools@8.5.0
+  welcome: circleci/welcome-orb@dev:alpha
 
 version: 2.1
 
@@ -42,12 +43,21 @@ workflows:
             branches:
               only: master
 
-  publish-prod:
+  test-publish-prod:
     jobs:
+      - test-commands:
+          executor: circleci/node:10.15.3
+          steps: 
+            - welcome/welcome-message
+            - welcome/common-env-vars
+            - welcome/next-steps
+
       - orb-tools/dev-promote-prod:
           name: dev-promote-patch
           orb-name: circleci/welcome-orb
           context: orb-publishing
+          requires:
+            - test-commands
           filters:
             branches:
               ignore: /.*/
@@ -59,6 +69,8 @@ workflows:
           orb-name: circleci/welcome-orb
           release: minor
           context: orb-publishing
+          requires:
+            - test-commands
           filters:
             branches:
               ignore: /.*/
@@ -69,6 +81,8 @@ workflows:
           name: dev-promote-major
           orb-name: circleci/welcome-orb
           release: major
+          requires:
+            - test-commands
           context: orb-publishing
           filters:
             branches:
