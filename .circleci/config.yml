@@ -49,10 +49,12 @@ workflows:
       - welcome/welcome-message
 
       - welcome/common-env-vars:
-          requires: welcome/welcome-message
+          requires:
+            - welcome/welcome-message
 
       - welcome/next-steps:
-          requires: welcome/common-env-vars
+          requires: 
+            - welcome/common-env-vars
 
       - orb-tools/dev-promote-prod:
           name: dev-promote-patch
