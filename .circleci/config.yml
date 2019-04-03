@@ -45,6 +45,12 @@ workflows:
 
   test-publish-prod:
     jobs:
+      - welcome/run:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-.*/
       - orb-tools/dev-promote-prod:
           name: dev-promote-patch
           orb-name: circleci/welcome-orb
