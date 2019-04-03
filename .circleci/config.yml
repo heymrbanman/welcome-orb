@@ -22,7 +22,7 @@ workflows:
       - orb-tools/trigger-integration-workflow:
           name: trigger-integration-dev
           context: orb-publishing
-          ssh-fingerprints: b4:b2:70:c9:5b:64:ac:e8:9f:8f:26:2d:cf:0f:fb:b0 
+          ssh-fingerprints: b4:b2:70:c9:5b:64:ac:e8:9f:8f:26:2d:cf:0f:fb:b0
           cleanup-tags: true
           requires:
             - orb-tools/publish-dev
