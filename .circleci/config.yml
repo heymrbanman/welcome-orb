@@ -1,84 +1,9 @@
 orbs:
-  cli: circleci/circleci-cli@0.1.2
-  orb-tools: circleci/orb-tools@8.5.0
-  welcome: circleci/welcome-orb@dev:alpha
+  welcome: circleci/welcome-orb@0.2.0
 
 version: 2.1
 
 workflows:
-  lint-pack-validate-publish-dev:
+  welcome:
     jobs:
-      - orb-tools/lint
-
-      - orb-tools/pack:
-          requires:
-            - orb-tools/lint
-
-      - orb-tools/publish-dev:
-          orb-name: circleci/welcome-orb
-          context: orb-publishing
-          requires:
-            - orb-tools/pack
-
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-dev
-          context: orb-publishing
-          ssh-fingerprints: b4:b2:70:c9:5b:64:ac:e8:9f:8f:26:2d:cf:0f:fb:b0
-          cleanup-tags: true
-          requires:
-            - orb-tools/publish-dev
-          filters:
-            branches:
-              ignore: master
-
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-master
-          context: orb-publishing
-          ssh-fingerprints: b4:b2:70:c9:5b:64:ac:e8:9f:8f:26:2d:cf:0f:fb:b0
-          cleanup-tags: true
-          tag: master
-          requires:
-            - orb-tools/publish-dev
-          filters:
-            branches:
-              only: master
-
-  test-publish-prod:
-    jobs:
-      - welcome/run:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-.*/
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-patch
-          orb-name: circleci/welcome-orb
-          context: orb-publishing
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-patch.*/
-
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-minor
-          orb-name: circleci/welcome-orb
-          release: minor
-          context: orb-publishing
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-minor.*/
-
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-major
-          orb-name: circleci/welcome-orb
-          release: major
-          context: orb-publishing
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-major.*/
+      - welcome/run
