@@ -47,20 +47,16 @@ workflows:
     jobs:
       # Run the Orb jobs as a quick smoke test.
       - welcome/welcome-message
-
-      - welcome/common-env-vars:
-          requires:
-            - welcome/welcome-message
-
-      - welcome/next-steps:
-          requires:
-            - welcome/common-env-vars
+      - welcome/common-env-vars
+      - welcome/next-steps
 
       - orb-tools/dev-promote-prod:
           name: dev-promote-patch
           orb-name: circleci/welcome-orb
           context: orb-publishing
           requires:
+            - welcome/welcome-message
+            - welcome/common-env-vars
             - welcome/next-steps
           filters:
             branches:
@@ -74,6 +70,8 @@ workflows:
           release: minor
           context: orb-publishing
           requires:
+            - welcome/welcome-message
+            - welcome/common-env-vars
             - welcome/next-steps
           filters:
             branches:
@@ -86,6 +84,8 @@ workflows:
           orb-name: circleci/welcome-orb
           release: major
           requires:
+            - welcome/welcome-message
+            - welcome/common-env-vars
             - welcome/next-steps
           context: orb-publishing
           filters:
