@@ -47,8 +47,10 @@ workflows:
     jobs:
       # Run the Orb jobs as a quick smoke test.
       - welcome/welcome-message
+
       - welcome/common-env-vars:
           requires: welcome/welcome-message
+
       - welcome/next-steps:
           requires: welcome/common-env-vars
 
