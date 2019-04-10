@@ -2,4 +2,4 @@ description: >
   Custom Docker image with pre-packaged welcome orb commands
 
 docker:
-  - image: circleci/welcome-config-image:0.1.39-ce7124d
+  - image: circleci/welcome-config-image:0.1.40-b28e6fe
