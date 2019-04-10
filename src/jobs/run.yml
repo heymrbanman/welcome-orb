@@ -5,11 +5,11 @@ executor: default
 
 steps:
   - run:
-      name: "Welcome to CircleCI. Start by clicking here."
+      name: "Welcome and basics to get you started"
       command: welcome_message.sh
   - run:
-      name: "Click here to learn about some handy built-in environment variables."
+      name: "Built-in environment variables for your project"
       command: common_env_vars.sh
   - run:
-      name: "Click here for links to docs and next steps."
+      name: "Next steps to customize your pipeline"
       command: next_steps.sh
