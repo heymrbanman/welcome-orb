@@ -5,6 +5,24 @@ orbs:
 
 version: 2.1
 
+# yaml anchor filters
+integration-dev_filters: &integration-dev_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /integration-.*/
+
+integration-master_filters: &integration-master_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /master-.*/
+
+prod-deploy_requires: &prod-deploy_requires
+  [
+    welcome-run-master
+  ]
+
 workflows:
   lint-pack-validate-publish-dev:
     jobs:
@@ -45,16 +63,22 @@ workflows:
 
   test-publish-prod:
     jobs:
+      # triggered by non-master branch commits
       - welcome/run:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-.*/
+          name: welcome-run-dev
+          filters: *integration-dev_filters
+
+      # triggered by master branch commits
+      - welcome/run:
+          name: welcome-run-master
+          filters: *integration-master_filters
+
+      # patch, minor, or major publishing
       - orb-tools/dev-promote-prod:
           name: dev-promote-patch
           orb-name: circleci/welcome-orb
           context: orb-publishing
+          requires: *prod-deploy_requires
           filters:
             branches:
               ignore: /.*/
@@ -66,6 +90,7 @@ workflows:
           orb-name: circleci/welcome-orb
           release: minor
           context: orb-publishing
+          requires: *prod-deploy_requires
           filters:
             branches:
               ignore: /.*/
@@ -77,6 +102,7 @@ workflows:
           orb-name: circleci/welcome-orb
           release: major
           context: orb-publishing
+          requires: *prod-deploy_requires
           filters:
             branches:
               ignore: /.*/
