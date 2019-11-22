@@ -1,110 +1,27 @@
-orbs:
-  cli: circleci/circleci-cli@0.1.2
-  orb-tools: circleci/orb-tools@8.5.0
-  welcome: circleci/welcome-orb@dev:alpha
-
 version: 2.1
 
-# yaml anchor filters
-integration-dev_filters: &integration-dev_filters
-  branches:
-    ignore: /.*/
-  tags:
-    only: /integration-.*/
-
-integration-master_filters: &integration-master_filters
-  branches:
-    ignore: /.*/
-  tags:
-    only: /master-.*/
-
-prod-deploy_requires: &prod-deploy_requires
-  [
-    welcome-run-master
-  ]
-
 workflows:
-  lint-pack-validate-publish-dev:
+  main:
     jobs:
-      - orb-tools/lint
+      - build
 
-      - orb-tools/pack:
-          requires:
-            - orb-tools/lint
-
-      - orb-tools/publish-dev:
-          orb-name: circleci/welcome-orb
-          context: orb-publishing
-          requires:
-            - orb-tools/pack
-
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-dev
-          context: orb-publishing
-          ssh-fingerprints: b4:b2:70:c9:5b:64:ac:e8:9f:8f:26:2d:cf:0f:fb:b0
-          cleanup-tags: true
-          requires:
-            - orb-tools/publish-dev
-          filters:
-            branches:
-              ignore: master
-
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-master
-          context: orb-publishing
-          ssh-fingerprints: b4:b2:70:c9:5b:64:ac:e8:9f:8f:26:2d:cf:0f:fb:b0
-          cleanup-tags: true
-          tag: master
-          requires:
-            - orb-tools/publish-dev
-          filters:
-            branches:
-              only: master
-
-  test-publish-prod:
-    jobs:
-      # triggered by non-master branch commits
-      - welcome/run:
-          name: welcome-run-dev
-          filters: *integration-dev_filters
-
-      # triggered by master branch commits
-      - welcome/run:
-          name: welcome-run-master
-          filters: *integration-master_filters
-
-      # patch, minor, or major publishing
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-patch
-          orb-name: circleci/welcome-orb
-          context: orb-publishing
-          requires: *prod-deploy_requires
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-patch.*/
-
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-minor
-          orb-name: circleci/welcome-orb
-          release: minor
-          context: orb-publishing
-          requires: *prod-deploy_requires
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-minor.*/
-
-      - orb-tools/dev-promote-prod:
-          name: dev-promote-major
-          orb-name: circleci/welcome-orb
-          release: major
-          context: orb-publishing
-          requires: *prod-deploy_requires
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-major.*/
+jobs:
+  build:
+    docker:
+      - image: cibuilds/docker:19.03
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: "Build Docker Images"
+          command: ./build-images.sh
+      - deploy:
+          name: "Publish Docker Images (master branch only)"
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              
+              echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin
+              
+              echo "Publishing cimg/node to Docker Hub production."
+              docker push circleci/welcome-config-image
+            fi

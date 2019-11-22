@@ -5,11 +5,17 @@ executor: default
 
 steps:
   - run:
-      name: "Welcome and basics to get you started"
+      name: "Congratulations!"
       command: welcome_message.sh
   - run:
-      name: "Built-in environment variables for your project"
-      command: common_env_vars.sh
-  - run:
-      name: "Next steps to customize your pipeline"
+      name: "Next Steps"
       command: next_steps.sh
+  - run:
+      name: "Help Topic: Examples - Tutorials, Sample Configs, Cookbook"
+      command: examples.sh
+  - run:
+      name: "Help Topic: Overview and Concepts"
+      command: concepts.sh
+  - run:
+      name: "Help Topic: Using the CLI"
+      command: using_the_cli.sh
